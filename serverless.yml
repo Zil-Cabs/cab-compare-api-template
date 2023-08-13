@@ -1,5 +1,5 @@
-service: hello-world
-org: zil-cabs
+service: TODO
+org: zilcabs
 
 configValidationMode: error
 frameworkVersion: '3'
@@ -42,9 +42,9 @@ custom:
     prod: release
 
   customDomain:
-    domainName: cabcompare-api.whichone.in
-    basePath: ''
-    certificateName: '*.whichone.in'
+    domainName: TODO.cc.whichone.in
+    basePath: 'TODO'
+    certificateName: '*.cc.whichone.in'
     stage: ${self:provider.stage}
     createRoute53Record: false
     createRoute53IPv6Record: false
