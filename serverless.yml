@@ -1,0 +1,62 @@
+service: hello-world
+org: zil-cabs
+
+configValidationMode: error
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  region: ap-south-1
+  runtime: provided.al2
+  architecture: arm64
+  stage: ${opt:aws-profile}
+  environment:
+    PROVIDER_REGION: ${self:provider.region}
+
+functions:
+  api:
+    handler: ./api
+    name: ${self:service}-lambda-${self:provider.stage}
+    memorySize: 256
+    reservedConcurrency: 20
+    timeout: 5
+    logRetentionInDays: 30
+    events:
+      - httpApi: '*'
+    environment:
+      GIN_MODE: ${self:custom.ginMode.${self:provider.stage}}
+
+plugins:
+  - serverless-go-plugin
+  - serverless-domain-manager
+
+custom:
+  stages:
+    - local
+    - staging
+    - prod
+
+  ginMode:
+    local: debug
+    staging: release
+    prod: release
+
+  customDomain:
+    domainName: cabcompare-api.whichone.in
+    basePath: ''
+    certificateName: '*.whichone.in'
+    stage: ${self:provider.stage}
+    createRoute53Record: false
+    createRoute53IPv6Record: false
+    apiType: http
+    endpointType: REGIONAL
+    autoDomain: false
+
+  go:
+    baseDir: . # folder where go.mod file lives, if set `handler` property should be set relatively to that folder
+    binDir: .bin # target folder for binary files
+    cgo: 0 # CGO_ENABLED flag
+    cmd: GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" # compile command
+    monorepo: false # if enabled, builds function every directory (useful for monorepo where go.mod is managed by each function
+    supportedRuntimes: ["go1.x", "provided.al2"] # the plugin compiles a function only if runtime is declared here (either on function or provider level) 
+    buildProvidedRuntimeAsBootstrap: true

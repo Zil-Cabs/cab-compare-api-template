@@ -1,0 +1,14 @@
+{
+  "scripts": {
+    "test": "go test",
+    "deploy:local": "serverless deploy --aws-profile local",
+    "deploy:staging": "serverless deploy --aws-profile staging",
+    "create-domain": "serverless create_domain --aws-profile prod",
+    "deploy:prod": "serverless deploy --aws-profile prod",
+    "deploy-function:prod": "serverless deploy function --function api --aws-profile prod"
+  },
+  "devDependencies": {
+    "serverless-domain-manager": "^6.2.0",
+    "serverless-go-plugin": "^2.2.0"
+  }
+}
